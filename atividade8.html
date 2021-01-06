@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Atividade 8</title>
+        <meta name="viewport" content="width=device-width, inicial-scale=1.0">
+    </head>
+
+    <body>
+        <h1>Gerenciamento de Tabelas</h1>
+
+        <table >
+            <caption>Doações Financeiras</caption>
+            <thead>
+                <tr>
+                    <th>Nome Contribuinte: </th>
+                    <th>E-mail: </th>
+                    <th>Instituição beneficiada: </th>
+                    <th>Valor depositado: </th>
+                    <th><input type="button" name="add" id="add" value="+" onclick="addRow()"></th>
+                </tr>
+            </thead>
+            <tbody id="tBody"></tbody>
+            
+
+        </table>
+        <br>
+        <input type="button" onclick="confirmSend()" value="Enviar dados">
+    </body>
+
+    <style>
+        body {
+            font-family:'Courier New', Courier, monospace;
+        }
+        caption{
+            font-size: 2.5em;
+            font-weight: bold;
+            font-variant: small-caps;
+        }
+        table, tr, td{
+            border: 1px solid black;
+            background-color: rgba(0, 0, 0, 0.103);
+            border-width: 1.5px;
+            
+        }
+        th{
+            border: solid 1.5px;
+            background-color: rgba(124, 168, 226, 0.918);
+            border-radius: 5px;
+            padding: 5px;
+
+        }
+        label{
+            font-weight: bold;
+        }
+        input:focus{
+            background-color: rgba(69, 80, 83, 0.493);
+        }
+        h1{
+            font-variant: small-caps;
+            border-bottom: solid 2px rgb(0, 20, 100);
+        }
+        
+    </style>
+
+    <script>
+        
+
+        
+        function addRow(){
+            let tr = document.createElement("tr");
+            let td = document.createElement("td");
+
+            let name = document.createElement("input");
+            name.type = "text";
+            name.id = "name";
+            name.setAttribute("required","required");
+            td.appendChild(name);
+            tr.appendChild(td);
+
+            td = document.createElement("td");
+            let email = document.createElement("input");
+            email.type = "text";
+            email.id = "email";
+            email.setAttribute("required","required");
+            td.appendChild(email);
+            tr.appendChild(td);
+
+            let opV = document.createElement("option");
+            opV.value = "";
+            opV.text = " ";
+            let opH = document.createElement("option");
+            opH.value = "Hospital";
+            opH.text = "Hospital";
+            let opC = document.createElement("option");
+            opC.value = "Creche";
+            opC.text = "Creche";
+            let opM = document.createElement("option");
+            opM.value = "Museu";
+            opM.text = "Museu";
+
+            td = document.createElement("td");
+            let inst = document.createElement("select");
+            inst.id = "inst"
+            inst.add(opV);
+            inst.add(opH);
+            inst.add(opC);
+            inst.add(opM);
+            inst.setAttribute("required","required");
+
+            td.appendChild(inst);
+            tr.appendChild(td);
+
+            td = document.createElement("td");
+            let valor = document.createElement("input");
+            valor.type = "text";
+            valor.id = "valor"
+            valor.setAttribute("required","required");
+
+            td.appendChild(valor);
+            tr.appendChild(td);
+
+            td = document.createElement("td");
+            let exc = document.createElement("input");
+            exc.type = "button";
+            exc.value = "Excluir"
+            exc.onclick = deleteRow;
+            td.appendChild(exc);
+            tr.appendChild(td);
+
+            let table = document.getElementById("tBody");
+            table.appendChild(tr);
+
+            console.log("Row added!");
+
+
+        }
+
+        function confirmDelete(){
+            let confirmation;
+            confirmation = window.confirm("Deseja mesmo excluir essa linha?");
+            console.log("Confirm line delete: " + confirmation);
+            return confirmation;
+        }
+
+        function deleteRow(){
+            if(confirmDelete() === true){
+                let td=this.parentElement;
+            let tr=td.parentElement;
+            let index=tr.rowIndex;
+            let tBody=tr.parentElement;
+            let table=tBody.parentElement;
+            table.deleteRow(index);
+            }
+        }
+
+        function confirmSend(){
+            let tableBody = document.getElementById("tBody");
+            let rows = tableBody.rows.length;
+
+            let confirmation = false; 
+            
+            let elements = [];
+
+            if(rows === 0){
+                window.alert("Tabela vazia.")
+            }
+        
+            if (rows > 0){
+
+                for(let i = 0; i < rows; i++){
+                    if(tableBody.rows[i].cells[0].children.name.value == ""){
+                        while (tableBody.rows[i].cells[0].children.name.value == ""){
+                            tableBody.rows[i].cells[0].children.name.value = window.prompt("Preencha o campo NOME da linha " + (i+1));
+                        }
+                    }
+                    if(tableBody.rows[i].cells[1].children.email.value == ""){
+                        while (tableBody.rows[i].cells[1].children.email.value == ""){
+                            tableBody.rows[i].cells[1].children.email.value = window.prompt("Preencha o campo EMAIL da linha " + (i+1));
+                        }
+                    }
+                    if(tableBody.rows[i].cells[2].children.inst.value == ""){
+                        window.confirm("Selecione uma INSTITUIÇÃO na linha " + (i+1));        
+                    }
+
+                    if(tableBody.rows[i].cells[3].children.valor.value == ""){
+                        while (tableBody.rows[i].cells[3].children.valor.value == ""){
+                            tableBody.rows[i].cells[3].children.valor.value = window.prompt("Preencha o campo VALOR da linha " + (i+1));
+                        }
+                    }
+                
+                }
+
+                for(let x = 0; x < rows; x++){
+                    for(y = 0; y < 4; y++){
+                        if(tableBody.rows[x].cells[y].children[0].value !== ""){
+                            elements.push(tableBody.rows[x].cells[y].children[0].value);
+                        }
+                    }
+                }
+                
+                if(elements.length == (rows * 4)){
+                    window.alert("Dados enviados com sucesso!")
+                }
+            }      
+
+                
+
+        }
+    </script>
+</html>
